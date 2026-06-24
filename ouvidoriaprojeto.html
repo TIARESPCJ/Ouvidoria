@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ouvidoria</title>
+  <style>
+    :root {
+      --azul: #00415c;
+      --azul-claro: #0aa7df;
+      --texto: #4f5d6b;
+      --borda: #d9dee5;
+      --fundo: #f7f9fb;
+      --branco: #ffffff;
+
+      /* Durações e easing centralizados */
+      --dur-abrir:  360ms;
+      --dur-fechar: 280ms;
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--texto);
+      background: var(--branco);
+      line-height: 1.55;
+    }
+
+    main {
+      width: min(980px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 64px;
+    }
+
+    /* ── Busca ── */
+    .toolbar { margin-bottom: 18px; }
+
+    .search {
+      width: min(520px, 100%);
+      min-height: 44px;
+      padding: 0 14px;
+      border: 1px solid var(--borda);
+      border-radius: 6px;
+      color: var(--texto);
+      font-size: 16px;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .search:focus {
+      border-color: var(--azul-claro);
+      box-shadow: 0 0 0 3px rgba(10, 167, 223, 0.15);
+    }
+
+    /* ── Acordeão ── */
+    .accordion { display: grid; gap: 12px; }
+
+    .item {
+      border: 1px solid var(--borda);
+      border-radius: 6px;
+      background: var(--branco);
+      box-shadow: 0 2px 8px rgba(0, 32, 56, 0.08);
+      transition: border-color 240ms ease, box-shadow 240ms ease;
+    }
+
+    .item[open] {
+      border-color: rgba(10, 167, 223, 0.38);
+      box-shadow: 0 8px 22px rgba(0, 32, 56, 0.10);
+    }
+
+    .item[hidden] { display: none; }
+
+    /* ── Cabeçalho / summary ── */
+    .item-title {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      min-height: 58px;
+      padding: 16px 52px 16px 18px;
+      border: 0;
+      border-radius: 6px;
+      background: var(--fundo);
+      color: var(--azul);
+      font: inherit;
+      font-size: clamp(16px, 2.4vw, 20px);
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+      list-style: none;       /* Firefox */
+    }
+
+    .item-title::-webkit-details-marker { display: none; } /* Chrome/Safari */
+
+    .item-title:focus-visible {
+      outline: 3px solid rgba(10, 167, 223, 0.28);
+      outline-offset: -3px;
+    }
+
+    /* Ícone +/− */
+    .item-title::after {
+      content: "+";
+      position: absolute;
+      top: 50%;
+      right: 18px;
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--azul-claro);
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 1;
+      transform: translateY(-50%) rotate(0deg);
+      transition: transform 300ms var(--ease), color 220ms ease;
+    }
+
+    .item[open] .item-title::after {
+      content: "−";
+      transform: translateY(-50%) rotate(180deg);
+    }
+
+    /* ── Wrapper de animação (CSS Grid trick) ──
+       Animar grid-template-rows: 0fr → 1fr é a forma
+       moderna e correta de animar altura até "auto",
+       sem precisar medir scrollHeight em JS.            */
+    .item-body {
+      display: grid;
+      grid-template-rows: 0fr;           /* fechado: filho colapsado */
+      border-top: 1px solid transparent;
+      transition:
+        grid-template-rows var(--dur-abrir) var(--ease),
+        border-color        240ms          ease;
+    }
+
+    .item[open] .item-body {
+      grid-template-rows: 1fr;           /* aberto: filho com altura natural */
+      border-top-color: var(--borda);
+    }
+
+    /* Quando fechando: mantém [open] mas reverte a grid */
+    .item.is-closing .item-body {
+      grid-template-rows: 0fr;
+      border-top-color: transparent;
+      transition:
+        grid-template-rows var(--dur-fechar) var(--ease),
+        border-color        200ms            ease;
+    }
+
+    /* ── Conteúdo interno ──
+       min-height: 0  →  obrigatório para o filho respeitar 0fr
+       overflow: hidden → clip durante a animação               */
+    .item-content {
+      min-height: 0;
+      overflow: hidden;
+      padding: 0 18px;
+      font-size: 16px;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition:
+        opacity   220ms ease 60ms,
+        transform 320ms var(--ease) 40ms;
+      overflow-wrap: anywhere;
+    }
+
+    .item[open] .item-content {
+      padding: 18px;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .item.is-closing .item-content {
+      opacity: 0;
+      transform: translateY(-8px);
+      padding-top: 0;
+      padding-bottom: 0;
+      transition:
+        opacity   160ms ease,
+        transform 220ms var(--ease),
+        padding   var(--dur-fechar) var(--ease);
+    }
+
+    /* Tipografia interna */
+    .item-content p { margin: 0 0 14px; }
+
+    .item-content p:last-child,
+    .item-content ul:last-child { margin-bottom: 0; }
+
+    .item-content strong,
+    .item-content a {
+      color: var(--azul);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .item-content a:hover { text-decoration: underline; }
+
+    .intro-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .intro-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 46px;
+      padding: 11px 22px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition:
+        transform      180ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow     180ms ease,
+        background-color 180ms ease,
+        border-color   180ms ease;
+    }
+
+    .intro-button:hover {
+      text-decoration: none;
+      transform: translateY(-2px);
+    }
+
+    .intro-button:active {
+      transform: translateY(0px);
+      transition-duration: 80ms;
+    }
+
+    /* Ícone SVG inline via pseudo-element — usamos background-image */
+    .intro-button::before {
+      content: "";
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .intro-button-primary {
+      background: var(--azul);
+      color: #fff !important;
+      border-color: var(--azul);
+      box-shadow: 0 4px 14px rgba(0, 65, 92, 0.30), 0 1px 3px rgba(0, 65, 92, 0.18);
+    }
+
+    .intro-button-primary::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z'/%3E%3C/svg%3E");
+    }
+
+    .intro-button-primary:hover {
+      background: #005070;
+      border-color: #005070;
+      box-shadow: 0 8px 20px rgba(0, 65, 92, 0.36), 0 2px 6px rgba(0, 65, 92, 0.20);
+    }
+
+    .intro-button-secondary {
+      background: #fff;
+      border-color: var(--azul-claro);
+      color: var(--azul) !important;
+      box-shadow: 0 2px 8px rgba(10, 167, 223, 0.12);
+    }
+
+    .intro-button-secondary::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300415c' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+    }
+
+    .intro-button-secondary:hover {
+      background: #eef8fc;
+      border-color: var(--azul-claro);
+      box-shadow: 0 6px 16px rgba(10, 167, 223, 0.20);
+    }
+    /* Links de relatório */
+    .report-links {
+      display: grid;
+      gap: 12px;
+      margin: 20px 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .report-links a {
+      display: inline-flex;
+      width: fit-content;
+      color: var(--azul);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .report-links a:hover { text-decoration: underline; }
+
+    /* Lista de contato */
+    .contact-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+      overflow-wrap: anywhere;
+    }
+
+    /* Mensagem de vazio */
+    .empty-message {
+      display: none;
+      padding: 18px;
+      border: 1px dashed var(--borda);
+      border-radius: 6px;
+      color: var(--texto);
+      background: var(--fundo);
+    }
+
+    .empty-message.is-visible { display: block; }
+
+    /* ── Mobile ── */
+    @media (max-width: 700px) {
+      main { width: 100%; padding: 16px 12px 44px; }
+
+      .toolbar { margin-bottom: 14px; }
+
+      .search { width: 100%; min-height: 42px; font-size: 15px; }
+
+      .accordion { gap: 10px; }
+
+      .item-title {
+        min-height: 52px;
+        padding: 13px 44px 13px 14px;
+        line-height: 1.25;
+      }
+
+      .item-title::after { right: 14px; }
+
+      .item-content { font-size: 15px; }
+
+      .intro-actions {
+        display: grid;
+        gap: 10px;
+      }
+
+      .intro-button {
+        width: 100%;
+        min-height: 46px;
+        padding: 11px 16px;
+        font-size: 15px;
+      }
+      .item[open] .item-content { padding: 15px; }
+
+      .item-content {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      main { padding-left: 10px; padding-right: 10px; }
+      .item-title { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+
+    <div class="toolbar">
+      <input class="search" type="search" placeholder="Buscar informação..." aria-label="Buscar informação da Ouvidoria">
+    </div>
+
+    <section class="accordion" aria-label="Informações da Ouvidoria">
+
+      <details class="item" open>
+        <summary class="item-title">Apresentação</summary>
+        <div class="item-body">
+          <div class="item-content">
+            <p>A Ouvidoria da ARES-PCJ é o canal de contato entre a Agência Reguladora e os usuários, prestadores de serviços de saneamento básico e a comunidade.</p>
+            <p>Por meio dela, o usuário pode registrar reclamações, denúncias, sugestões, elogios ou consultas sobre os serviços de água, esgoto e resíduos sólidos nos municípios associados.</p>
+            <div class="intro-actions" aria-label="Ações da Ouvidoria">
+              <a class="intro-button intro-button-primary" href="https://www.arespcj.com.br/conteudo/registrar-manifestacao">Registrar sua manifestação</a>
+              <a class="intro-button intro-button-secondary" href="https://www.arespcj.com.br/conteudo/acompanhar-manifestacao">Acompanhar sua manifestação</a>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary class="item-title">Classificação das Manifestações</summary>
+        <div class="item-body">
+          <div class="item-content">
+            <p>Ao registrar uma manifestação na Ouvidoria, é importante escolher corretamente a sua classificação, pois isso facilita a análise e o encaminhamento adequado da demanda.</p>
+            <p>A <strong>reclamação</strong> deve ser utilizada quando houver <strong>insatisfação em relação à prestação dos serviços</strong> de saneamento básico, como problemas no abastecimento de água, cobrança indevida, falhas no atendimento ou na execução de serviços.</p>
+            <p>A <strong>denúncia</strong> é indicada quando o usuário deseja <strong>comunicar a ocorrência de alguma irregularidade ou prática ilícita</strong> relacionada aos serviços de saneamento, como situações que possam violar normas, leis ou regulamentos.</p>
+            <p>A <strong>sugestão</strong> deve ser registrada quando o objetivo for <strong>apresentar uma ideia, proposta ou recomendação</strong> para a melhoria dos serviços de saneamento básico ou do atendimento prestado.</p>
+            <p>O <strong>elogio</strong> é o meio adequado para <strong>manifestar reconhecimento ou satisfação</strong> com o serviço público oferecido ou com o atendimento recebido por parte do prestador de serviços.</p>
+            <p>A <strong>consulta</strong> deve ser utilizada quando o usuário deseja <strong>obter informações ou esclarecimentos</strong> sobre determinado assunto relacionado aos serviços de saneamento básico, sem que haja, necessariamente, um problema a ser solucionado.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary class="item-title">Reclamação</summary>
+        <div class="item-body">
+          <div class="item-content">
+            <p>Antes de procurar a Ouvidoria da ARES-PCJ para registrar uma reclamação, o usuário deve entrar em contato com o atendimento ao cliente do prestador de serviço para buscar uma solução.</p>
+            <p>Clique <a href="https://www.arespcj.com.br/conteudo/contatos-prestadores">AQUI</a> para obter o <strong>contato dos prestadores de serviços</strong>.</p>
+            <p>O usuário também deve procurar a ouvidoria do próprio prestador, caso exista.</p>
+            <p>A Ouvidoria da ARES-PCJ deve ser acionada somente se o problema não for resolvido ou se a resposta do prestador não for satisfatória.</p>
+            <p><strong>O número de protocolo do atendimento é obrigatório para registrar uma reclamação.</strong></p>
+            <p>Após o registro, a Ouvidoria da ARES-PCJ encaminha a demanda ao prestador de serviço e atua para facilitar a solução, adotando as providências previstas em norma específica.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary class="item-title">Prazos</summary>
+        <div class="item-body">
+          <div class="item-content">
+            <p>Todas as manifestações recebidas pela Ouvidoria são enviadas ao prestador de serviço, que tem <strong>10 dias úteis</strong> para responder à Agência Reguladora, conforme a Resolução ARES-PCJ nº 49/2014, podendo esse prazo ser prorrogado por mais <strong>5 dias úteis</strong>.</p>
+            <p>Já a Ouvidoria da Agência Reguladora tem prazo de até <strong>30 dias</strong>, prorrogáveis por mais <strong>30 dias</strong>, para dar a resposta final ao usuário, conforme a Lei Federal nº 13.460/2017.</p>
+            <p>Acesse <a href="https://www.arespcj.com.br/public/media/arquivos/1694031064-resoluo_n_49_2014_-_ouvidoria_-_alterada.pdf">AQUI</a> a Resolução ARES-PCJ nº 49/2014.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary class="item-title">Canais de Contato</summary>
+        <div class="item-body">
+          <div class="item-content">
+            <ul class="contact-list">
+              <li><strong>Telefone:</strong> 0800 77 11445</li>
+              <li><strong>E-mail:</strong> ouvidoria@arespcj.com.br</li>
+              <li><strong>WhatsApp:</strong> 19 99954-2370</li>
+              <li><strong>Endereço:</strong> Avenida Paulista, 633, Jardim Santana, Americana/SP</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary class="item-title">Horário de Funcionamento</summary>
+        <div class="item-body">
+          <div class="item-content">
+            <p>Segunda-feira a sexta-feira, das 8h00 às 12h00 e das 13h30 às 17h30.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary class="item-title">Carta de Serviços ao Usuário</summary>
+        <div class="item-body">
+          <div class="item-content">
+            <p>A Carta de Serviços ao Usuário é um documento previsto na Lei nº 13.460/2017, que tem por finalidade informar à sociedade sobre os serviços prestados pelos órgãos e entidades da administração pública, as formas de acessá-los e os compromissos assumidos em relação à qualidade do atendimento.</p>
+            <p>Acesse <a href="https://www.arespcj.com.br/public/media/arquivos/1631816292-pub_carta_de_servicos_ares-pcj.pdf">AQUI</a> a Carta de Serviços ao Usuário da ARES-PCJ.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary class="item-title">Pesquisa de Satisfação</summary>
+        <div class="item-body">
+          <div class="item-content">
+            <p>A ARES-PCJ realiza, periodicamente, pesquisas de satisfação junto aos usuários, com o objetivo de avaliar a qualidade da prestação dos serviços de saneamento básico nos municípios associados.</p>
+            <p>Os relatórios das pesquisas estão disponíveis <a href="https://www.arespcj.com.br/conteudo/pesquisa-de-satisfacao">AQUI</a>.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary class="item-title">Relatórios de Gestão de Ouvidoria</summary>
+        <div class="item-body">
+          <div class="item-content">
+            <p>Os Relatórios de Gestão de Ouvidoria são instrumentos técnicos de gestão, monitoramento e controle, destinados a sistematizar, analisar e divulgar as manifestações recebidas anualmente pela Ouvidoria, bem como as providências adotadas e os resultados alcançados.</p>
+            <p>Esses relatórios consolidam informações quantitativas e qualitativas relativas às manifestações de usuários, permitindo a identificação de tendências, recorrências, não conformidades e fragilidades na prestação dos serviços públicos, além de subsidiar ações corretivas, preventivas e de aprimoramento institucional.</p>
+            <ul class="report-links">
+              <li><a href="https://www.arespcj.com.br/public/media/arquivos/1780335236-relatorio_de_gesto_ouvidoria_2025_verso_final.pdf">Relatório de Gestão de Ouvidoria - 2025</a></li>
+              <li><a href="https://www.arespcj.com.br/public/media/arquivos/1747328278-relatorio_de_gesto_ouvidoria_2024.pdf">Relatório de Gestão de Ouvidoria - 2024</a></li>
+              <li><a href="https://www.arespcj.com.br/public/media/arquivos/1708447007-relatorio_de_gesto_ouvidoria_2023_-_atualizada_30-01-2024-02.pdf">Relatório de Gestão de Ouvidoria - 2023</a></li>
+            </ul>
+            <p>Os Relatórios de Gestão de Ouvidoria dos anos anteriores estão inseridos nos Relatórios Anuais de Gestão da ARES-PCJ (Capítulo Ouvidoria), e podem ser acessados <a href="https://www.arespcj.com.br/conteudo/relatorios-de-gestao">AQUI</a>.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary class="item-title">Pareceres Tarifários</summary>
+        <div class="item-body">
+          <div class="item-content">
+            <p>A Ouvidoria também elabora relatórios específicos quando há proposta de reajuste das tarifas de água, esgoto e demais preços públicos nos municípios associados.</p>
+            <p>Esses relatórios fazem parte dos pareceres tarifários, disponíveis <a href="https://www.arespcj.com.br/conteudo/parecer-tarifario">AQUI</a>.</p>
+          </div>
+        </div>
+      </details>
+
+    </section>
+
+    <p class="empty-message" aria-live="polite">Nenhuma informação encontrada para essa busca.</p>
+
+  </main>
+
+  <script>
+    const searchInput  = document.querySelector('.search');
+    const items        = Array.from(document.querySelectorAll('.item'));
+    const emptyMessage = document.querySelector('.empty-message');
+
+    const CLOSE_DURATION = 280; // deve bater com --dur-fechar no CSS
+    const closeTimers = new WeakMap();
+
+    /* Abre um item (cancela fechamento pendente se houver) */
+    function openItem(item) {
+      const timer = closeTimers.get(item);
+      if (timer) {
+        clearTimeout(timer);
+        closeTimers.delete(item);
+      }
+      item.classList.remove('is-closing');
+      item.open = true;
+    }
+
+    /* Fecha um item com animação */
+    function closeItem(item) {
+      if (!item.open) return;
+
+      const timer = closeTimers.get(item);
+      if (timer) clearTimeout(timer);
+
+      // Aciona a animação CSS (is-closing reverte grid-template-rows para 0fr)
+      item.classList.add('is-closing');
+
+      // Só remove o atributo [open] após a transição terminar
+      const id = setTimeout(() => {
+        item.open = false;
+        item.classList.remove('is-closing');
+        closeTimers.delete(item);
+      }, CLOSE_DURATION);
+
+      closeTimers.set(item, id);
+    }
+
+    /* Garante que o item inicial aberto esteja em estado limpo (sem transição no load) */
+    items.forEach((item) => {
+      if (item.hasAttribute('open')) {
+        const content = item.querySelector('.item-content');
+        if (content) {
+          content.style.transition = 'none';
+          content.style.opacity    = '1';
+          content.style.transform  = 'translateY(0)';
+          content.style.padding    = '18px';
+          // Remove o estilo inline após um frame para liberar as transições
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              content.style.transition = '';
+              content.style.opacity    = '';
+              content.style.transform  = '';
+              content.style.padding    = '';
+            });
+          });
+        }
+      }
+    });
+
+    /* Comportamento de acordeão: abre um, fecha os outros */
+    items.forEach((item) => {
+      item.querySelector('.item-title').addEventListener('click', (e) => {
+        e.preventDefault(); // impede o toggle nativo do <details>
+
+        const isOpen = item.open && !item.classList.contains('is-closing');
+
+        if (isOpen) {
+          closeItem(item);
+        } else {
+          items.forEach((other) => { if (other !== item) closeItem(other); });
+          openItem(item);
+        }
+      });
+    });
+
+    /* Busca: filtra itens e abre os que batem */
+    searchInput.addEventListener('input', () => {
+      const term = searchInput.value.trim().toLowerCase();
+      let visible = 0;
+
+      items.forEach((item) => {
+        const match = item.textContent.toLowerCase().includes(term);
+        item.hidden = !match;
+        if (match) visible++;
+        if (term && match) openItem(item);
+        if (!term)         closeItem(item);
+      });
+
+      // Reabre o primeiro se a busca for apagada
+      if (!term && items.length) openItem(items[0]);
+
+      emptyMessage.classList.toggle('is-visible', visible === 0);
+    });
+  </script>
+</body>
+</html>
+
