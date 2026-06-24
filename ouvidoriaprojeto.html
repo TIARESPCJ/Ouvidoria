@@ -36,6 +36,24 @@
     }
 
     /* ── Busca ── */
+    .presentation {
+      margin-bottom: 28px;
+      color: var(--texto);
+      font-size: 16px;
+    }
+
+    .presentation h2 {
+      margin: 0 0 18px;
+      color: var(--azul);
+      font-size: clamp(24px, 3vw, 30px);
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .presentation p {
+      margin: 0 0 14px;
+    }
     .toolbar { margin-bottom: 18px; }
 
     .search {
@@ -330,6 +348,10 @@
     @media (max-width: 700px) {
       main { width: 100%; padding: 16px 12px 44px; }
 
+      .presentation { margin-bottom: 22px; }
+
+      .presentation h2 { font-size: 24px; }
+
       .toolbar { margin-bottom: 14px; }
 
       .search { width: 100%; min-height: 42px; font-size: 15px; }
@@ -373,26 +395,20 @@
 </head>
 <body>
   <main>
-
+    <section class="presentation" aria-label="Apresentação da Ouvidoria">
+      <h2>Apresentação</h2>
+      <p>A Ouvidoria da ARES-PCJ é o canal de contato entre a Agência Reguladora e os usuários, prestadores de serviços de saneamento básico e a comunidade.</p>
+      <p>Por meio dela, o usuário pode registrar reclamações, denúncias, sugestões, elogios ou consultas sobre os serviços de água, esgoto e resíduos sólidos nos municípios associados.</p>
+      <div class="intro-actions" aria-label="Ações da Ouvidoria">
+        <a class="intro-button intro-button-primary" href="https://www.arespcj.com.br/conteudo/registrar-manifestacao">Registrar sua manifestação</a>
+        <a class="intro-button intro-button-secondary" href="https://www.arespcj.com.br/conteudo/acompanhar-manifestacao">Acompanhar sua manifestação</a>
+      </div>
+    </section>
     <div class="toolbar">
       <input class="search" type="search" placeholder="Buscar informação..." aria-label="Buscar informação da Ouvidoria">
     </div>
 
     <section class="accordion" aria-label="Informações da Ouvidoria">
-
-      <details class="item" open>
-        <summary class="item-title">Apresentação</summary>
-        <div class="item-body">
-          <div class="item-content">
-            <p>A Ouvidoria da ARES-PCJ é o canal de contato entre a Agência Reguladora e os usuários, prestadores de serviços de saneamento básico e a comunidade.</p>
-            <p>Por meio dela, o usuário pode registrar reclamações, denúncias, sugestões, elogios ou consultas sobre os serviços de água, esgoto e resíduos sólidos nos municípios associados.</p>
-            <div class="intro-actions" aria-label="Ações da Ouvidoria">
-              <a class="intro-button intro-button-primary" href="https://www.arespcj.com.br/conteudo/registrar-manifestacao">Registrar sua manifestação</a>
-              <a class="intro-button intro-button-secondary" href="https://www.arespcj.com.br/conteudo/acompanhar-manifestacao">Acompanhar sua manifestação</a>
-            </div>
-          </div>
-        </div>
-      </details>
 
       <details class="item">
         <summary class="item-title">Classificação das Manifestações</summary>
@@ -511,6 +527,7 @@
   <script>
     const searchInput  = document.querySelector('.search');
     const items        = Array.from(document.querySelectorAll('.item'));
+    const searchableItems = items;
     const emptyMessage = document.querySelector('.empty-message');
 
     const CLOSE_DURATION = 280; // deve bater com --dur-fechar no CSS
@@ -590,16 +607,13 @@
       const term = searchInput.value.trim().toLowerCase();
       let visible = 0;
 
-      items.forEach((item) => {
+      searchableItems.forEach((item) => {
         const match = item.textContent.toLowerCase().includes(term);
         item.hidden = !match;
         if (match) visible++;
         if (term && match) openItem(item);
         if (!term)         closeItem(item);
       });
-
-      // Reabre o primeiro se a busca for apagada
-      if (!term && items.length) openItem(items[0]);
 
       emptyMessage.classList.toggle('is-visible', visible === 0);
     });
