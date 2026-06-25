@@ -1028,9 +1028,7 @@ to { opacity: 1; transform: translateY(0) scale(1); }
         } else {
           items.forEach((other) => { if (other !== item) closeItem(other); });
           openItem(item);
-          setTimeout(() => {
-            item.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 140);
+
         }
       });
     });
