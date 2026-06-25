@@ -928,7 +928,11 @@ to { opacity: 1; transform: translateY(0) scale(1); }
     const emptyMessage = document.querySelector('.empty-message');
 
     const IFRAME_RESIZE_DELAY = 620;
+    const IFRAME_MAX_STEP = 220;
+    const IFRAME_STEP_DELAY = 28;
     let iframeResizeTimer = 0;
+    let iframeStepTimer = 0;
+    let lastSentIframeHeight = 0;
 
     function getDocumentHeight() {
       const content = document.querySelector('main') || document.body;
@@ -936,12 +940,36 @@ to { opacity: 1; transform: translateY(0) scale(1); }
       return Math.ceil(rect.bottom + window.scrollY + 12);
     }
 
-    function notifyIframeHeight() {
-      if (window.parent === window) return;
+    function postIframeHeight(height) {
       window.parent.postMessage({
         type: 'ouvidoria:height',
-        height: getDocumentHeight()
+        height
       }, '*');
+      lastSentIframeHeight = height;
+    }
+
+    function notifyIframeHeight() {
+      if (window.parent === window) return;
+
+      const targetHeight = getDocumentHeight();
+      clearTimeout(iframeStepTimer);
+
+      if (!lastSentIframeHeight) {
+        postIframeHeight(targetHeight);
+        return;
+      }
+
+      const difference = targetHeight - lastSentIframeHeight;
+      if (Math.abs(difference) < 4) return;
+
+      if (Math.abs(difference) > IFRAME_MAX_STEP) {
+        const direction = difference > 0 ? 1 : -1;
+        postIframeHeight(lastSentIframeHeight + (IFRAME_MAX_STEP * direction));
+        iframeStepTimer = setTimeout(notifyIframeHeight, IFRAME_STEP_DELAY);
+        return;
+      }
+
+      postIframeHeight(targetHeight);
     }
 
     function scheduleIframeResize(delay = 0) {
