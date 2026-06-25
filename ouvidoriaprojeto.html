@@ -476,6 +476,114 @@
       border-color: var(--azul-claro);
       box-shadow: 0 6px 16px rgba(10, 167, 223, 0.20);
     }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    .access-modal[hidden] {
+      display: none;
+    }
+
+    .access-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(0, 32, 56, 0.48);
+    }
+
+    .access-modal-card {
+      position: relative;
+      width: min(440px, 100%);
+      padding: 26px;
+      border: 1px solid rgba(10, 167, 223, 0.28);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--texto);
+      box-shadow: 0 18px 42px rgba(0, 32, 56, 0.24);
+      animation: modalIn 180ms ease-out;
+    }
+
+    .access-modal-card h3 {
+      margin: 0 38px 10px 0;
+      color: var(--azul);
+      font-size: 22px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .access-modal-card p {
+      margin: 0 0 20px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .access-modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--borda);
+      border-radius: 50%;
+      background: #fff;
+      color: var(--azul);
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+    }
+
+    .access-modal-close:hover,
+    .access-modal-close:focus-visible {
+      border-color: var(--azul-claro);
+      background: #eef8fc;
+      color: var(--azul);
+      outline: none;
+    }
+
+    .access-modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .access-modal-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 11px 22px;
+      border: 2px solid var(--azul);
+      border-radius: 8px;
+      background: var(--azul);
+      color: #fff !important;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(0, 65, 92, 0.30), 0 1px 3px rgba(0, 65, 92, 0.18);
+      transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+    }
+
+    .access-modal-action:hover,
+    .access-modal-action:focus-visible {
+      background: #005070;
+      border-color: #005070;
+      color: #fff !important;
+      text-decoration: none;
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
     .intro-note {
       flex-basis: 100%;
       margin: 0;
@@ -701,8 +809,8 @@
       <p>A Ouvidoria da ARES-PCJ é o canal de contato entre a Agência Reguladora e os usuários, prestadores de serviços de saneamento básico e a comunidade.</p>
       <p>Por meio dela, o usuário pode registrar reclamações, denúncias, sugestões, elogios ou consultas sobre os serviços de água, esgoto e resíduos sólidos nos municípios associados.</p>
       <div class="intro-actions" aria-label="Ações da Ouvidoria">
-        <a class="intro-button intro-button-primary" href="https://www.arespcj.com.br/conteudo/registrar-manifestacao">Registrar sua manifestação</a>
-        <a class="intro-button intro-button-secondary" href="https://www.arespcj.com.br/conteudo/acompanhar-manifestacao">Acompanhar sua manifestação</a>
+        <a class="intro-button intro-button-primary" href="https://www.arespcj.com.br/conteudo/registrar-manifestacao" data-modal-trigger data-modal-title="Registrar sua manifestação" data-modal-description="Abra o sistema da Ouvidoria para registrar reclamações, denúncias, sugestões, elogios ou consultas." data-modal-action="Acessar registro">Registrar sua manifestação</a>
+        <a class="intro-button intro-button-secondary" href="https://www.arespcj.com.br/conteudo/acompanhar-manifestacao" data-modal-trigger data-modal-title="Acompanhar sua manifestação" data-modal-description="Consulte o andamento de uma manifestação já enviada à Ouvidoria." data-modal-action="Acessar acompanhamento">Acompanhar sua manifestação</a>
         <p class="intro-note">Consulte o <a class="link-destaque" href="https://www.arespcj.com.br/conteudo/contatos-prestadores">contato dos prestadores de serviços</a>.</p>
       </div>
     </section>
@@ -855,6 +963,17 @@
 
   </main>
 
+  
+  <div class="access-modal" id="accessModal" role="dialog" aria-modal="true" aria-labelledby="accessModalTitle" aria-describedby="accessModalDescription" hidden>
+    <div class="access-modal-card" role="document">
+      <button class="access-modal-close" type="button" data-modal-close aria-label="Fechar">×</button>
+      <h3 id="accessModalTitle">Acessar serviço</h3>
+      <p id="accessModalDescription">Escolha a opção para continuar.</p>
+      <div class="access-modal-actions">
+        <a class="access-modal-action" id="accessModalAction" href="#" target="_blank" rel="noopener">Acessar</a>
+      </div>
+    </div>
+  </div>
   <script>
     const searchInput  = document.querySelector('.search');
     const items        = Array.from(document.querySelectorAll('.item'));
@@ -863,6 +982,47 @@
 
     const CLOSE_DURATION = 280; // deve bater com --dur-fechar no CSS
     const closeTimers = new WeakMap();
+    const accessModal = document.querySelector('#accessModal');
+    const accessModalTitle = document.querySelector('#accessModalTitle');
+    const accessModalDescription = document.querySelector('#accessModalDescription');
+    const accessModalAction = document.querySelector('#accessModalAction');
+    let lastModalTrigger = null;
+
+    function openAccessModal(trigger) {
+      lastModalTrigger = trigger;
+      accessModalTitle.textContent = trigger.dataset.modalTitle || 'Acessar serviço';
+      accessModalDescription.textContent = trigger.dataset.modalDescription || 'Clique para acessar a página do serviço.';
+      accessModalAction.textContent = trigger.dataset.modalAction || 'Acessar';
+      accessModalAction.href = trigger.href;
+      accessModal.hidden = false;
+      document.body.classList.add('modal-open');
+      accessModalAction.focus();
+    }
+
+    function closeAccessModal() {
+      accessModal.hidden = true;
+      document.body.classList.remove('modal-open');
+      if (lastModalTrigger) lastModalTrigger.focus();
+    }
+
+    document.querySelectorAll('[data-modal-trigger]').forEach((trigger) => {
+      trigger.addEventListener('click', (event) => {
+        event.preventDefault();
+        openAccessModal(trigger);
+      });
+    });
+
+    accessModal.addEventListener('click', (event) => {
+      if (event.target === accessModal || event.target.closest('[data-modal-close]')) {
+        closeAccessModal();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !accessModal.hidden) {
+        closeAccessModal();
+      }
+    });
 
     /* Abre um item (cancela fechamento pendente se houver) */
     function openItem(item) {
