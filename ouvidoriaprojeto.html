@@ -15,9 +15,9 @@
       --branco: #ffffff;
 
       /* Durações e easing centralizados */
-      --dur-abrir:  360ms;
-      --dur-fechar: 280ms;
-      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+      --dur-abrir:  520ms;
+      --dur-fechar: 380ms;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     * { box-sizing: border-box; }
@@ -189,8 +189,9 @@
       opacity: 0;
       transform: translateY(-8px);
       transition:
-        opacity   220ms ease 60ms,
-        transform 320ms var(--ease) 40ms;
+        opacity   300ms ease 100ms,
+        transform 440ms var(--ease) 70ms,
+        padding   var(--dur-abrir) var(--ease);
       overflow-wrap: anywhere;
     }
 
@@ -206,8 +207,8 @@
       padding-top: 0;
       padding-bottom: 0;
       transition:
-        opacity   160ms ease,
-        transform 220ms var(--ease),
+        opacity   220ms ease,
+        transform 320ms var(--ease),
         padding   var(--dur-fechar) var(--ease);
     }
 
@@ -926,16 +927,13 @@ to { opacity: 1; transform: translateY(0) scale(1); }
     const searchableItems = items;
     const emptyMessage = document.querySelector('.empty-message');
 
-    const IFRAME_RESIZE_DELAY = 380;
+    const IFRAME_RESIZE_DELAY = 620;
     let iframeResizeTimer = 0;
 
     function getDocumentHeight() {
-      return Math.max(
-        document.body.scrollHeight,
-        document.documentElement.scrollHeight,
-        document.body.offsetHeight,
-        document.documentElement.offsetHeight
-      );
+      const content = document.querySelector('main') || document.body;
+      const rect = content.getBoundingClientRect();
+      return Math.ceil(rect.bottom + window.scrollY + 12);
     }
 
     function notifyIframeHeight() {
@@ -959,7 +957,7 @@ to { opacity: 1; transform: translateY(0) scale(1); }
     if ('ResizeObserver' in window) {
       new ResizeObserver(() => scheduleIframeResize()).observe(document.body);
     }
-    const CLOSE_DURATION = 280; // deve bater com --dur-fechar no CSS
+    const CLOSE_DURATION = 380; // deve bater com --dur-fechar no CSS
     const closeTimers = new WeakMap();
 /* Abre um item (cancela fechamento pendente se houver) */
     function openItem(item) {
@@ -1032,7 +1030,7 @@ to { opacity: 1; transform: translateY(0) scale(1); }
           openItem(item);
           setTimeout(() => {
             item.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 90);
+          }, 140);
         }
       });
     });
