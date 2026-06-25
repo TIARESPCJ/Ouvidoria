@@ -57,7 +57,9 @@
     .presentation p {
       margin: 0 0 14px;
     }
-    .toolbar { margin-bottom: 18px; }
+    .toolbar { margin-bottom: 0px; 
+    padding-left: 550px;
+    }
 
     .search {
       width: min(520px, 100%);
@@ -108,6 +110,7 @@
       background: var(--fundo);
       color: var(--azul);
       font: inherit;
+      font-family: Arial, Helvetica, sans-serif;
       font-size: clamp(16px, 2.4vw, 20px);
       font-weight: 700;
       text-align: left;
@@ -222,6 +225,161 @@
 
     .item-content a:hover { text-decoration: underline; }
 
+    .item-content strong,
+    .presentation strong,
+    .manifest-back strong {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .classification-intro {
+      margin-bottom: 22px;
+    }
+
+    .manifest-diagram {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 24px;
+      max-width: 780px;
+      margin: 26px auto 8px;
+      align-items: start;
+    }
+
+    .manifest-card {
+      appearance: none;
+      -webkit-appearance: none;
+      display: block;
+      width: 100%;
+      grid-column: span 2;
+      min-height: 152px;
+      padding: 0;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: #fff;
+      font: inherit;
+      font-family: Arial, Helvetica, sans-serif;
+      text-align: center;
+      cursor: pointer;
+      perspective: 1100px;
+      align-self: start;
+      transition: min-height 280ms ease;
+    }
+
+    .manifest-card:nth-child(4) {
+      grid-column: 2 / span 2;
+    }
+
+    .manifest-card:nth-child(5) {
+      grid-column: 4 / span 2;
+    }
+
+    .manifest-card.is-flipped {
+      min-height: 260px;
+    }
+
+    .manifest-card-inner {
+      position: relative;
+      display: block;
+      width: 100%;
+      min-height: 152px;
+      border-radius: 12px;
+      transform-style: preserve-3d;
+      transition:
+        min-height 280ms ease,
+        transform 520ms cubic-bezier(0.2, 0.75, 0.2, 1),
+        box-shadow 180ms ease;
+      box-shadow: 0 4px 14px rgba(0, 65, 92, 0.18);
+    }
+
+    .manifest-card.is-flipped .manifest-card-inner {
+      min-height: 260px;
+      transform: rotateY(180deg);
+      box-shadow: 0 12px 28px rgba(0, 65, 92, 0.26);
+    }
+
+    .manifest-card:hover .manifest-card-inner,
+    .manifest-card:focus-visible .manifest-card-inner {
+      box-shadow: 0 10px 24px rgba(0, 65, 92, 0.25);
+    }
+
+    .manifest-card:focus-visible {
+      outline: 3px solid rgba(10, 167, 223, 0.34);
+      outline-offset: 4px;
+    }
+
+    .manifest-face {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 18px;
+      border-radius: 12px;
+      background: #176783;
+      color: #fff;
+      text-align: center;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      overflow: hidden;
+    }
+
+    .manifest-front {
+      flex-direction: column;
+      gap: 8px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(20px, 2.8vw, 30px);
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .manifest-front > span:first-child {
+      white-space: nowrap;
+    }
+
+    .manifest-front-hint {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.42);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.2;
+      opacity: 0.92;
+      white-space: nowrap;
+    }
+
+    .manifest-back {
+      padding: 18px;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.32;
+      transform: rotateY(180deg);
+    }
+
+    .manifest-back strong {
+      color: inherit;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+    }
+
+    .manifest-back-text {
+      display: block;
+      max-width: 100%;
+      margin: 0 auto;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+      line-height: 1.34;
+      text-align: center;
+      white-space: normal;
+      overflow-wrap: normal;
+      word-break: normal;
+    }
     .intro-actions {
       display: flex;
       flex-wrap: wrap;
@@ -371,6 +529,38 @@
 
       .item-content { font-size: 15px; }
 
+      .manifest-diagram {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        max-width: none;
+        margin: 18px 0 4px;
+      }
+
+      .manifest-card,
+      .manifest-card:nth-child(4),
+      .manifest-card:nth-child(5) {
+        grid-column: auto;
+      }
+
+      .manifest-card,
+      .manifest-card-inner {
+        min-height: 132px;
+      }
+
+      .manifest-card.is-flipped,
+      .manifest-card.is-flipped .manifest-card-inner {
+        min-height: 230px;
+      }
+
+      .manifest-front {
+        font-size: 21px;
+      }
+
+      .manifest-back {
+        padding: 16px;
+        font-size: 13px;
+      }
+
       .intro-actions {
         display: grid;
         gap: 10px;
@@ -382,6 +572,7 @@
         padding: 11px 16px;
         font-size: 15px;
       }
+
       .item[open] .item-content { padding: 15px; }
 
       .item-content {
@@ -389,7 +580,6 @@
         padding-right: 15px;
       }
     }
-
     @media (max-width: 420px) {
       main { padding-right: 10px; }
       .item-title { font-size: 16px; }
@@ -398,6 +588,9 @@
 </head>
 <body>
   <main>
+     <div class="toolbar">
+      <input class="search" type="search" placeholder="Buscar informação..." aria-label="Buscar informação da Ouvidoria">
+    </div>
     <section class="presentation" aria-label="Apresentação da Ouvidoria">
       <h2>Apresentação</h2>
       <p>A Ouvidoria da ARES-PCJ é o canal de contato entre a Agência Reguladora e os usuários, prestadores de serviços de saneamento básico e a comunidade.</p>
@@ -405,24 +598,54 @@
       <div class="intro-actions" aria-label="Ações da Ouvidoria">
         <a class="intro-button intro-button-primary" href="https://www.arespcj.com.br/conteudo/registrar-manifestacao">Registrar sua manifestação</a>
         <a class="intro-button intro-button-secondary" href="https://www.arespcj.com.br/conteudo/acompanhar-manifestacao">Acompanhar sua manifestação</a>
+        <p>Clique <a href="https://www.arespcj.com.br/conteudo/contatos-prestadores">AQUI</a> para obter o <strong>contato dos prestadores de serviços</strong>.</p>
       </div>
     </section>
-    <div class="toolbar">
-      <input class="search" type="search" placeholder="Buscar informação..." aria-label="Buscar informação da Ouvidoria">
-    </div>
-
+   
     <section class="accordion" aria-label="Informações da Ouvidoria">
 
       <details class="item">
         <summary class="item-title">Classificação das Manifestações</summary>
         <div class="item-body">
           <div class="item-content">
-            <p>Ao registrar uma manifestação na Ouvidoria, é importante escolher corretamente a sua classificação, pois isso facilita a análise e o encaminhamento adequado da demanda.</p>
-            <p>A <strong>reclamação</strong> deve ser utilizada quando houver <strong>insatisfação em relação à prestação dos serviços</strong> de saneamento básico, como problemas no abastecimento de água, cobrança indevida, falhas no atendimento ou na execução de serviços.</p>
-            <p>A <strong>denúncia</strong> é indicada quando o usuário deseja <strong>comunicar a ocorrência de alguma irregularidade ou prática ilícita</strong> relacionada aos serviços de saneamento, como situações que possam violar normas, leis ou regulamentos.</p>
-            <p>A <strong>sugestão</strong> deve ser registrada quando o objetivo for <strong>apresentar uma ideia, proposta ou recomendação</strong> para a melhoria dos serviços de saneamento básico ou do atendimento prestado.</p>
-            <p>O <strong>elogio</strong> é o meio adequado para <strong>manifestar reconhecimento ou satisfação</strong> com o serviço público oferecido ou com o atendimento recebido por parte do prestador de serviços.</p>
-            <p>A <strong>consulta</strong> deve ser utilizada quando o usuário deseja <strong>obter informações ou esclarecimentos</strong> sobre determinado assunto relacionado aos serviços de saneamento básico, sem que haja, necessariamente, um problema a ser solucionado.</p>
+            <p class="classification-intro">Ao registrar uma manifestação na Ouvidoria, é importante escolher corretamente a sua classificação, pois isso facilita a análise e o encaminhamento adequado da demanda.</p>
+
+            <div class="manifest-diagram" aria-label="Classificações das manifestações">
+              <button type="button" class="manifest-card" aria-expanded="false">
+                <span class="manifest-card-inner">
+                  <span class="manifest-face manifest-front"><span>RECLAMAÇÃO</span><span class="manifest-front-hint">Clique para mais informações</span></span>
+                  <span class="manifest-face manifest-back"><span class="manifest-back-text">A <strong>reclamação</strong> deve ser utilizada quando houver <strong>insatisfação em relação à prestação dos serviços</strong> de saneamento básico, como problemas no abastecimento de água, cobrança indevida, falhas no atendimento ou na execução de serviços.</span></span>
+                </span>
+              </button>
+
+              <button type="button" class="manifest-card" aria-expanded="false">
+                <span class="manifest-card-inner">
+                  <span class="manifest-face manifest-front"><span>DENÚNCIA</span><span class="manifest-front-hint">Clique para mais informações</span></span>
+                  <span class="manifest-face manifest-back"><span class="manifest-back-text">A <strong>denúncia</strong> é indicada quando o usuário deseja <strong>comunicar a ocorrência de alguma irregularidade ou prática ilícita</strong> relacionada aos serviços de saneamento, como situações que possam violar normas, leis ou regulamentos.</span></span>
+                </span>
+              </button>
+
+              <button type="button" class="manifest-card" aria-expanded="false">
+                <span class="manifest-card-inner">
+                  <span class="manifest-face manifest-front"><span>SUGESTÃO</span><span class="manifest-front-hint">Clique para mais informações</span></span>
+                  <span class="manifest-face manifest-back"><span class="manifest-back-text">A <strong>sugestão</strong> deve ser registrada quando o objetivo for <strong>apresentar uma ideia, proposta ou recomendação</strong> para a melhoria dos serviços de saneamento básico ou do atendimento prestado.</span></span>
+                </span>
+              </button>
+
+              <button type="button" class="manifest-card" aria-expanded="false">
+                <span class="manifest-card-inner">
+                  <span class="manifest-face manifest-front"><span>ELOGIO</span><span class="manifest-front-hint">Clique para mais informações</span></span>
+                  <span class="manifest-face manifest-back"><span class="manifest-back-text">O <strong>elogio</strong> é o meio adequado para <strong>manifestar reconhecimento ou satisfação</strong> com o serviço público oferecido ou com o atendimento recebido por parte do prestador de serviços.</span></span>
+                </span>
+              </button>
+
+              <button type="button" class="manifest-card" aria-expanded="false">
+                <span class="manifest-card-inner">
+                  <span class="manifest-face manifest-front"><span>CONSULTA</span><span class="manifest-front-hint">Clique para mais informações</span></span>
+                  <span class="manifest-face manifest-back"><span class="manifest-back-text">A <strong>consulta</strong> deve ser utilizada quando o usuário deseja <strong>obter informações ou esclarecimentos</strong> sobre determinado assunto relacionado aos serviços de saneamento básico, sem que haja, necessariamente, um problema a ser solucionado.</span></span>
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </details>
@@ -601,6 +824,24 @@
         } else {
           items.forEach((other) => { if (other !== item) closeItem(other); });
           openItem(item);
+        }
+      });
+    });
+
+    const manifestCards = Array.from(document.querySelectorAll('.manifest-card'));
+
+    manifestCards.forEach((card) => {
+      card.addEventListener('click', () => {
+        const willOpen = !card.classList.contains('is-flipped');
+
+        manifestCards.forEach((item) => {
+          item.classList.remove('is-flipped');
+          item.setAttribute('aria-expanded', 'false');
+        });
+
+        if (willOpen) {
+          card.classList.add('is-flipped');
+          card.setAttribute('aria-expanded', 'true');
         }
       });
     });
