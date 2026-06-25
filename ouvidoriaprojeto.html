@@ -476,113 +476,7 @@
       border-color: var(--azul-claro);
       box-shadow: 0 6px 16px rgba(10, 167, 223, 0.20);
     }
-
-    body.modal-open {
-      overflow: hidden;
-    }
-
-    .access-modal[hidden] {
-      display: none;
-    }
-
-    .access-modal {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: grid;
-      place-items: center;
-      padding: 20px;
-      background: transparent;
-    }
-
-    .access-modal-card {
-      position: relative;
-      width: min(440px, 100%);
-      padding: 26px;
-      border: 1px solid rgba(10, 167, 223, 0.28);
-      border-radius: 8px;
-      background: #fff;
-      color: var(--texto);
-      box-shadow: 0 10px 24px rgba(0, 32, 56, 0.14);
-      animation: modalIn 180ms ease-out;
-    }
-
-    .access-modal-card h3 {
-      margin: 0 38px 10px 0;
-      color: var(--azul);
-      font-size: 22px;
-      line-height: 1.25;
-      font-weight: 700;
-    }
-
-    .access-modal-card p {
-      margin: 0 0 20px;
-      font-size: 15px;
-      line-height: 1.5;
-    }
-
-    .access-modal-close {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      display: grid;
-      place-items: center;
-      width: 34px;
-      height: 34px;
-      border: 1px solid var(--borda);
-      border-radius: 50%;
-      background: #fff;
-      color: var(--azul);
-      font-size: 24px;
-      line-height: 1;
-      cursor: pointer;
-      transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
-    }
-
-    .access-modal-close:hover,
-    .access-modal-close:focus-visible {
-      border-color: var(--azul-claro);
-      background: #eef8fc;
-      color: var(--azul);
-      outline: none;
-    }
-
-    .access-modal-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .access-modal-action {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 46px;
-      padding: 11px 22px;
-      border: 2px solid var(--azul);
-      border-radius: 8px;
-      background: var(--azul);
-      color: #fff !important;
-      font-size: 15px;
-      font-weight: 700;
-      text-decoration: none;
-      box-shadow: 0 4px 14px rgba(0, 65, 92, 0.30), 0 1px 3px rgba(0, 65, 92, 0.18);
-      transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
-    }
-
-    .access-modal-action:hover,
-    .access-modal-action:focus-visible {
-      background: #005070;
-      border-color: #005070;
-      color: #fff !important;
-      text-decoration: none;
-      transform: translateY(-2px);
-      outline: none;
-    }
-
-    @keyframes modalIn {
-      from { opacity: 0; transform: translateY(8px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .intro-note {
       flex-basis: 100%;
@@ -809,13 +703,77 @@
       <p>A Ouvidoria da ARES-PCJ é o canal de contato entre a Agência Reguladora e os usuários, prestadores de serviços de saneamento básico e a comunidade.</p>
       <p>Por meio dela, o usuário pode registrar reclamações, denúncias, sugestões, elogios ou consultas sobre os serviços de água, esgoto e resíduos sólidos nos municípios associados.</p>
       <div class="intro-actions" aria-label="Ações da Ouvidoria">
-        <a class="intro-button intro-button-primary" href="https://www.arespcj.com.br/conteudo/registrar-manifestacao" data-modal-trigger data-modal-title="Registrar sua manifestação" data-modal-description="Abra o sistema da Ouvidoria para registrar reclamações, denúncias, sugestões, elogios ou consultas." data-modal-action="Acessar registro">Registrar sua manifestação</a>
-        <a class="intro-button intro-button-secondary" href="https://www.arespcj.com.br/conteudo/acompanhar-manifestacao" data-modal-trigger data-modal-title="Acompanhar sua manifestação" data-modal-description="Consulte o andamento de uma manifestação já enviada à Ouvidoria." data-modal-action="Acessar acompanhamento">Acompanhar sua manifestação</a>
+        <a class="intro-button intro-button-primary" href="https://stip-arespcj.1doc.com.br/b.php?pg=wp/wp&amp;itd=22">Registrar sua manifestação</a>
+        <a class="intro-button intro-button-secondary" href="https://stip-arespcj.1doc.com.br/atendimento">Acompanhar sua manifestação</a>
         <p class="intro-note">Consulte o <a class="link-destaque" href="https://www.arespcj.com.br/conteudo/contatos-prestadores">contato dos prestadores de serviços</a>.</p>
       </div>
     </section>
    
     <section class="accordion" aria-label="Informações da Ouvidoria">
+
+      <details class="item">
+        <summary class="item-title">Orientações para registrar manifestação</summary>
+        <div class="item-body">
+          <div class="item-content">
+            <p><strong>CADASTRO DE USUÁRIO</strong></p>
+            <p>Para acessar o sistema da Ouvidoria e registrar uma manifestação, é necessário realizar previamente o cadastro de usuário.</p>
+            <p>No momento do cadastro, deverão ser informados, pelo menos, nome completo, e-mail e telefone de contato.</p>
+            <p>É fundamental que o e-mail e telefone estejam corretos e atualizados, pois a Ouvidoria poderá entrar em contato para solicitar informações complementares indispensáveis ao adequado andamento da manifestação.</p>
+            <p>Caso não seja possível estabelecer contato, a manifestação poderá ser encerrada sem a resolução do problema.</p>
+
+            <p><strong>MANIFESTAÇÃO SEM SIGILO</strong></p>
+            <p>Todas as manifestações são encaminhadas ao prestador de serviços, para que tome conhecimento da situação e adote as medidas cabíveis.</p>
+            <p>Em muitos casos, a identificação do usuário pode ser essencial para a adequada verificação do caso e adoção das providências necessárias.</p>
+            <p>Ao registrar uma manifestação sem sigilo, o usuário autoriza que seus dados pessoais sejam compartilhados com o prestador para apuração e tratamento da demanda.</p>
+            <p>Essa opção elimina a necessidade de autorizações adicionais para o compartilhamento de dados, o que contribui para maior agilidade no processamento da manifestação.</p>
+
+            <p><strong>MANIFESTAÇÃO SIGILOSA</strong></p>
+            <p>A manifestação sigilosa deve ser utilizada quando o usuário não deseja que sua identidade seja informada ao prestador de serviços.</p>
+            <p>Nessa modalidade, os dados pessoais somente serão compartilhados com o prestador mediante autorização expressa e posterior do usuário, o que pode tornar o tratamento da manifestação mais demorado.</p>
+            <p>Após o registro, é fundamental acompanhar seu e-mail, pois a Ouvidoria entrará em contato para solicitar a autorização para o compartilhamento de dados.</p>
+            <p>Na ausência de autorização, a manifestação não será encaminhada ao prestador e poderá ser encerrada sem a resolução do problema.</p>
+
+            <p><strong>MANIFESTAÇÃO ANÔNIMA</strong></p>
+            <p>A manifestação anônima deve ser utilizada quando o usuário não deseja se identificar, nem perante o prestador de serviços nem perante a ARES-PCJ.</p>
+            <p>Para registrá-la, não é necessário realizar cadastro prévio na plataforma.</p>
+            <p>Ainda assim, é indispensável o fornecimento de informações mínimas para possibilitar a apuração, como a descrição clara dos fatos e a localização da ocorrência.</p>
+            <p>Ressalta-se que, nessa modalidade, não será possível interagir com a Ouvidoria posteriormente, seja para responder mensagens, complementar informações ou anexar documentos.</p>
+            <p>O acompanhamento da manifestação ocorrerá exclusivamente por meio do código de acompanhamento gerado pelo sistema no momento do registro.</p>
+            <p>Recomenda-se que esse código seja anotado e guardado com atenção.</p>
+            <p>Essa opção é especialmente indicada para casos de denúncia, sobretudo quando o manifestante receia sofrer represálias ou retaliações.</p>
+            <p>Nessa modalidade, é fundamental que o relato não contenha informações que possam permitir a identificação do manifestante pelo prestador, como endereço completo, número de protocolo, código de consumidor ou nome do titular da conta.</p>
+            <p>Caso sejam identificados elementos que possibilitem a identificação do usuário, ou se o relato não apresentar informações suficientes para a apuração, a manifestação poderá ser encerrada sem a resolução do problema.</p>
+
+            <p><strong>TERMO DE CONSENTIMENTO</strong></p>
+            <p>Ao final do preenchimento, para prosseguir com o registro da manifestação, o usuário deve declarar que leu e concorda com o Termo de Consentimento para Tratamento de Dados Pessoais, elaborado em conformidade com a Lei Federal nº 13.709/2018 (Lei Geral de Proteção de Dados - LGPD).</p>
+            <p class="content-actions"><a class="content-action" href="https://www.arespcj.com.br/files/files/Termo%20de%20Consentimento%20LGPD%20Ouvidoria%20ARES%20PCJ%20-%20vers%C3%A3o%20jur.pdf">Termo de Consentimento</a></p>
+            <p class="content-actions"><a class="content-action" href="https://stip-arespcj.1doc.com.br/b.php?pg=wp/wp&amp;itd=22">Registrar sua manifestação</a></p>
+          </div>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary class="item-title">Orientações para acompanhar manifestação</summary>
+        <div class="item-body">
+          <div class="item-content">
+            <p><strong>POR E-MAIL</strong></p>
+            <p>Todas as atualizações relativas à manifestação serão encaminhadas por e-mail.</p>
+            <p>Por esse motivo, é fundamental informar um endereço eletrônico válido no momento do cadastro, e acompanhar regularmente sua caixa de entrada, inclusive a pasta de spam.</p>
+
+            <p><strong>PELA CENTRAL DE ATENDIMENTO - COM LOGIN</strong></p>
+            <p>Outra forma de acompanhar o andamento da manifestação é por meio do “Meu Inbox”, disponível na sua página de usuário na Central de Atendimento, após o login.</p>
+            <p class="content-actions"><a class="content-action" href="https://stip-arespcj.1doc.com.br/atendimento">Página de acompanhamento</a></p>
+            <p class="content-actions"><a class="content-action" href="https://www.arespcj.com.br/public/media/arquivos/1771530660-consultando_manifestaes_de_forma_identificada.pdf">Orientações para consulta com login</a></p>
+
+            <p><strong>PELA CENTRAL DE ATENDIMENTO - SEM LOGIN</strong></p>
+            <p>O andamento da manifestação também pode ser consultado sem necessidade de login, por meio do código externo fornecido pelo sistema no momento do registro.</p>
+            <p class="content-actions"><a class="content-action" href="https://stip-arespcj.1doc.com.br/atendimento">Página de acompanhamento</a></p>
+            <p class="content-actions"><a class="content-action" href="https://www.arespcj.com.br/public/media/arquivos/1771530746-consultando_uma_manifestao_utilizando_o_cdigo_de_acompanhamento.pdf">Orientações para consulta sem login</a></p>
+            <p>Para interagir com a manifestação (responder mensagens ou anexar documentos), é necessário realizar o login na plataforma.</p>
+          </div>
+        </div>
+      </details>
+
 
       <details class="item">
         <summary class="item-title">Classificação das Manifestações</summary>
@@ -862,7 +820,6 @@
           </div>
         </div>
       </details>
-
       <details class="item">
         <summary class="item-title">Reclamação</summary>
         <div class="item-body">
@@ -962,18 +919,6 @@
     <p class="empty-message" aria-live="polite">Nenhuma informação encontrada para essa busca.</p>
 
   </main>
-
-  
-  <div class="access-modal" id="accessModal" role="dialog" aria-modal="true" aria-labelledby="accessModalTitle" aria-describedby="accessModalDescription" hidden>
-    <div class="access-modal-card" role="document">
-      <button class="access-modal-close" type="button" data-modal-close aria-label="Fechar">×</button>
-      <h3 id="accessModalTitle">Acessar serviço</h3>
-      <p id="accessModalDescription">Escolha a opção para continuar.</p>
-      <div class="access-modal-actions">
-        <a class="access-modal-action" id="accessModalAction" href="#" target="_blank" rel="noopener">Acessar</a>
-      </div>
-    </div>
-  </div>
   <script>
     const searchInput  = document.querySelector('.search');
     const items        = Array.from(document.querySelectorAll('.item'));
@@ -982,49 +927,7 @@
 
     const CLOSE_DURATION = 280; // deve bater com --dur-fechar no CSS
     const closeTimers = new WeakMap();
-    const accessModal = document.querySelector('#accessModal');
-    const accessModalTitle = document.querySelector('#accessModalTitle');
-    const accessModalDescription = document.querySelector('#accessModalDescription');
-    const accessModalAction = document.querySelector('#accessModalAction');
-    let lastModalTrigger = null;
-
-    function openAccessModal(trigger) {
-      lastModalTrigger = trigger;
-      accessModalTitle.textContent = trigger.dataset.modalTitle || 'Acessar serviço';
-      accessModalDescription.textContent = trigger.dataset.modalDescription || 'Clique para acessar a página do serviço.';
-      accessModalAction.textContent = trigger.dataset.modalAction || 'Acessar';
-      accessModalAction.href = trigger.href;
-      accessModal.hidden = false;
-      document.body.classList.add('modal-open');
-      accessModalAction.focus();
-    }
-
-    function closeAccessModal() {
-      accessModal.hidden = true;
-      document.body.classList.remove('modal-open');
-      if (lastModalTrigger) lastModalTrigger.focus();
-    }
-
-    document.querySelectorAll('[data-modal-trigger]').forEach((trigger) => {
-      trigger.addEventListener('click', (event) => {
-        event.preventDefault();
-        openAccessModal(trigger);
-      });
-    });
-
-    accessModal.addEventListener('click', (event) => {
-      if (event.target === accessModal || event.target.closest('[data-modal-close]')) {
-        closeAccessModal();
-      }
-    });
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && !accessModal.hidden) {
-        closeAccessModal();
-      }
-    });
-
-    /* Abre um item (cancela fechamento pendente se houver) */
+/* Abre um item (cancela fechamento pendente se houver) */
     function openItem(item) {
       const timer = closeTimers.get(item);
       if (timer) {
